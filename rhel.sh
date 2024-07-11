@@ -15,6 +15,8 @@ if [[ $EUID -ne 0 ]]; then
 fi
 
 # Installing dependencies
+sudo yum update -y >> "$LOG_FILE" 2>&1 || log_error "Failed to update repositories"
+sudo yum groupinstall 'Development Tools' -y >> "$LOG_FILE" 2>&1 || log_error "Failed to install Development Tools" 
 sudo yum install -y make cmake gcc gcc-c++ python3 python3-policycoreutils automake autoconf libtool openssl-devel yum-utils >> "$LOG_FILE" 2>&1 || log_error "Failed to install dependencies"
 
 # Install custom GCC version
@@ -56,6 +58,7 @@ sudo yum-builddep python34 -y >> "$LOG_FILE" 2>&1 || log_error "Failed to instal
 
 # Installing Wazuh manager
 # Download and extract the latest version
+cd ~/Desktop/
 sudo curl -Ls https://github.com/wazuh/wazuh/archive/v4.8.0.tar.gz | tar zx
 cd wazuh-4.8.0
 

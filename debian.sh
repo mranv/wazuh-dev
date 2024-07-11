@@ -16,7 +16,8 @@ fi
 
 # Installing dependencies
 apt-get update >> "$LOG_FILE" 2>&1 || log_error "Failed to update repositories"
-apt-get install -y python gcc g++ make libc6-dev curl policycoreutils automake autoconf libtool libssl-dev >> "$LOG_FILE" 2>&1 || log_error "Failed to install dependencies"
+apt-get install -y build-essential python3 python-is-python3 -y >> "$LOG_FILE" 2>&1 || log_error "Failed to install dependencies"
+apt-get install -y gcc g++ make libc6-dev curl policycoreutils automake autoconf libtool libssl-dev -y >> "$LOG_FILE" 2>&1 || log_error "Failed to install dependencies"
 
 # Install CMake 3.18 from sources
 curl -OL https://packages.wazuh.com/utils/cmake/cmake-3.18.3.tar.gz && \
@@ -35,6 +36,7 @@ apt-get build-dep python3 -y >> "$LOG_FILE" 2>&1 || log_error "Failed to install
 
 # Installing Wazuh manager
 # Download and extract the latest version
+cd ~/Desktop/
 curl -Ls https://github.com/wazuh/wazuh/archive/v4.8.0.tar.gz | tar zx
 cd wazuh-4.8.0
 
