@@ -19,7 +19,8 @@ sudo yum update -y >> "$LOG_FILE" 2>&1 || log_error "Failed to update repositori
 sudo yum groupinstall 'Development Tools' -y >> "$LOG_FILE" 2>&1 || log_error "Failed to install Development Tools" 
 sudo yum install -y make cmake gcc gcc-c++ python3 python-is-python3 python3-policycoreutils automake autoconf libtool openssl-devel yum-utils  g++ make libc6-dev curl policycoreutils    libssl-dev >> "$LOG_FILE" 2>&1 || log_error "Failed to install dependencies"
 
-# Install custom GCC version
+# Install custom GCC version 
+# TODO: Update the GCC version to the latest stable version
 sudo curl -OL http://packages.wazuh.com/utils/gcc/gcc-9.4.0.tar.gz && \
 sudo tar xzf gcc-9.4.0.tar.gz && \
 cd gcc-9.4.0/ && \
