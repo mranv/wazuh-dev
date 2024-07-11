@@ -17,7 +17,7 @@ fi
 # Installing dependencies
 sudo yum update -y >> "$LOG_FILE" 2>&1 || log_error "Failed to update repositories"
 sudo yum groupinstall 'Development Tools' -y >> "$LOG_FILE" 2>&1 || log_error "Failed to install Development Tools" 
-sudo yum install -y make cmake gcc gcc-c++ python3 python3-policycoreutils automake autoconf libtool openssl-devel yum-utils >> "$LOG_FILE" 2>&1 || log_error "Failed to install dependencies"
+sudo yum install -y make cmake gcc gcc-c++ python3 python-is-python3 python3-policycoreutils automake autoconf libtool openssl-devel yum-utils  g++ make libc6-dev curl policycoreutils    libssl-dev >> "$LOG_FILE" 2>&1 || log_error "Failed to install dependencies"
 
 # Install custom GCC version
 sudo curl -OL http://packages.wazuh.com/utils/gcc/gcc-9.4.0.tar.gz && \
