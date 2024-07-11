@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# Hardcoded links
+CMAKE_LINK="https://packages.wazuh.com/utils/cmake/cmake-3.18.3.tar.gz"
+WAZUH_LINK="https://github.com/wazuh/wazuh/archive/v4.8.0.tar.gz"
+
 # Log file to capture errors
 LOG_FILE=/tmp/wazuh_setup_errors.log
 
@@ -10,8 +14,8 @@ log_error() {
 
 # Check if running as root
 if [[ $EUID -ne 0 ]]; then
-   log_error "This script must be run as root" 
-   exit 1
+    log_error "This script must be run as root"
+    exit 1
 fi
 
 # Installing dependencies
@@ -20,7 +24,7 @@ apt-get install -y build-essential python3 python-is-python3 -y >> "$LOG_FILE" 2
 apt-get install -y gcc g++ make libc6-dev curl policycoreutils automake autoconf libtool libssl-dev -y >> "$LOG_FILE" 2>&1 || log_error "Failed to install dependencies"
 
 # Install CMake 3.18 from sources
-curl -OL https://packages.wazuh.com/utils/cmake/cmake-3.18.3.tar.gz && \
+curl -OL $CMAKE_LINK && \
 tar -zxf cmake-3.18.3.tar.gz && \
 cd cmake-3.18.3 && \
 ./bootstrap --no-system-curl && \
@@ -37,7 +41,7 @@ apt-get build-dep python3 -y >> "$LOG_FILE" 2>&1 || log_error "Failed to install
 # Installing Wazuh manager
 # Download and extract the latest version
 cd ~/Desktop/
-curl -Ls https://github.com/wazuh/wazuh/archive/v4.8.0.tar.gz | tar zx
+curl -Ls $WAZUH_LINK | tar zx
 cd wazuh-4.8.0
 
 # Clean build if necessary

@@ -1,5 +1,10 @@
 #!/bin/bash
 
+# Hardcoded links
+GCC_LINK="http://packages.wazuh.com/utils/gcc/gcc-9.4.0.tar.gz"
+CMAKE_LINK="https://packages.wazuh.com/utils/cmake/cmake-3.18.3.tar.gz"
+WAZUH_LINK="https://github.com/wazuh/wazuh/archive/v4.8.0.tar.gz"
+
 # Log file to capture errors
 LOG_FILE=/tmp/install_script_errors.log
 
@@ -10,18 +15,17 @@ log_error() {
 
 # Check if running as root
 if [[ $EUID -ne 0 ]]; then
-   log_error "This script must be run as root" 
-   exit 1
+    log_error "This script must be run as root"
+    exit 1
 fi
 
 # Installing dependencies
 sudo yum update -y >> "$LOG_FILE" 2>&1 || log_error "Failed to update repositories"
-sudo yum groupinstall 'Development Tools' -y >> "$LOG_FILE" 2>&1 || log_error "Failed to install Development Tools" 
-sudo yum install -y make cmake gcc gcc-c++ python3 python-is-python3 python3-policycoreutils automake autoconf libtool openssl-devel yum-utils  g++ make libc6-dev curl policycoreutils    libssl-dev >> "$LOG_FILE" 2>&1 || log_error "Failed to install dependencies"
+sudo yum groupinstall 'Development Tools' -y >> "$LOG_FILE" 2>&1 || log_error "Failed to install Development Tools"
+sudo yum install -y make cmake gcc gcc-c++ python3 python-is-python3 python3-policycoreutils automake autoconf libtool openssl-devel yum-utils g++ make libc6-dev curl policycoreutils libssl-dev >> "$LOG_FILE" 2>&1 || log_error "Failed to install dependencies"
 
-# Install custom GCC version 
-# TODO: Update the GCC version to the latest stable version
-sudo curl -OL http://packages.wazuh.com/utils/gcc/gcc-9.4.0.tar.gz && \
+# Install custom GCC version
+sudo curl -OL $GCC_LINK && \
 sudo tar xzf gcc-9.4.0.tar.gz && \
 cd gcc-9.4.0/ && \
 sudo ./contrib/download_prerequisites && \
@@ -41,7 +45,7 @@ sudo yum-config-manager --enable powertools >> "$LOG_FILE" 2>&1 || log_error "Fa
 sudo yum install libstdc++-static -y >> "$LOG_FILE" 2>&1 || log_error "Failed to install libstdc++-static"
 
 # Optional: Install CMake 3.18 from sources
-sudo curl -OL https://packages.wazuh.com/utils/cmake/cmake-3.18.3.tar.gz && \
+sudo curl -OL $CMAKE_LINK && \
 sudo tar -zxf cmake-3.18.3.tar.gz && \
 cd cmake-3.18.3 && \
 sudo ./bootstrap --no-system-curl && \
@@ -60,7 +64,7 @@ sudo yum-builddep python34 -y >> "$LOG_FILE" 2>&1 || log_error "Failed to instal
 # Installing Wazuh manager
 # Download and extract the latest version
 cd ~/Desktop/
-sudo curl -Ls https://github.com/wazuh/wazuh/archive/v4.8.0.tar.gz | tar zx
+sudo curl -Ls $WAZUH_LINK | tar zx
 cd wazuh-4.8.0
 
 # Clean build if necessary
