@@ -13,7 +13,60 @@ SYMLINK_DIR="$HOME/.local/bin"
 # Colors
 BLUE='\033[1;34m'
 GREEN='\033[1;32m'
+RED='\033[1;31m'
 NC='\033[0m' # No Color
+
+echo -e "${BLUE}Checking and installing FUSE if necessary...${NC}"
+
+install_fuse() {
+    if command -v apt-get &> /dev/null; then
+        sudo apt-get update
+        sudo apt-get install -y fuse
+        sudo apt-get install -y linux-headers-$(uname -r)
+        sudo modprobe fuse
+        sudo systemctl enable fuse
+        sudo systemctl start fuse
+    elif command -v dnf &> /dev/null; then
+        sudo dnf install -y fuse
+        sudo dnf install -y kernel-devel
+        sudo modprobe fuse
+        sudo systemctl enable fuse
+        sudo systemctl start fuse
+    elif command -v yum &> /dev/null; then
+        sudo yum install -y fuse
+        sudo yum install -y kernel-devel
+        sudo modprobe fuse
+        sudo systemctl enable fuse
+        sudo systemctl start fuse
+    elif command -v zypper &> /dev/null; then
+        sudo zypper install -y fuse
+        sudo zypper install -y kernel-default-devel
+        sudo modprobe fuse
+        sudo systemctl enable fuse
+        sudo systemctl start fuse
+    elif command -v pacman &> /dev/null; then
+        sudo pacman -Syu --noconfirm fuse2
+        sudo pacman -Syu --noconfirm linux-headers
+        sudo modprobe fuse
+        sudo systemctl enable fuse
+        sudo systemctl start fuse
+    elif command -v apk &> /dev/null; then
+        sudo apk add fuse
+        sudo apk add linux-headers
+        sudo modprobe fuse
+        sudo rc-update add fuse
+        sudo service fuse start
+    else
+        echo -e "${RED}Package manager not found. Please install FUSE manually.${NC}"
+        exit 1
+    fi
+}
+
+if ! ldconfig -p | grep -q libfuse.so.2; then
+    install_fuse
+else
+    echo -e "${GREEN}FUSE is already installed.${NC}"
+fi
 
 echo -e "${BLUE}Fetching the URL of the latest version...${NC}"
 ARCHIVE_URL=$(curl -s "$API_URL" | grep -Po '"linux":.*?[^\\]",' | awk -F ':"' '{print $2}' | sed 's/[", ]//g')
